@@ -1,4 +1,6 @@
-const fetchBreed = async ({ animal }) => {
+const fetchBreed = async ({ queryKey }) => {
+  const animal = queryKey[1];
+
   if (!animal) return [];
 
   const apiRes = await fetch(
