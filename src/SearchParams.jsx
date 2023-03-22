@@ -4,14 +4,16 @@ import fetchSearch from "./hooks/fetchSearch";
 import useBreedList from "./hooks/useBreedList";
 import { useQuery } from "@tanstack/react-query";
 
-const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
+const ANIMALS = ["Bird", "Cat", "Dog", "Rabbit", "Reptile"];
 
 export const SearchParams = () => {
   const [animal, setAnimal] = useState(ANIMALS[0]);
+  const [page, setPage] = useState(0);
   const [requestParams, setRequestParams] = useState({
     location: "",
     animal: "",
     breed: "",
+    page: 0,
   });
 
   const { breedList } = useBreedList(animal);
@@ -20,19 +22,49 @@ export const SearchParams = () => {
 
   const pets = results?.data?.pets ?? [];
 
+  const getFormData = (e) => {
+    const formData = new FormData(e.target);
+    const obj = {
+      animal: formData.get("animal") ?? "",
+      breed: formData.get("breed") ?? "",
+      location: formData.get("location") ?? "",
+      page: 0,
+    };
+
+    return obj;
+  };
+
+  const handleNextPg = () => {
+    setPage((prev) => prev + 1);
+
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        page: page + 1,
+      };
+    });
+  };
+
+  const handleBackPg = () => {
+    setPage((prev) => prev - 1);
+
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        page: page - 1,
+      };
+    });
+  };
+  console.log(breedList);
   return (
     <div className="search-params">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const formData = new FormData(e.target);
-          const obj = {
-            animal: formData.get("animal") ?? "",
-            breed: formData.get("breed") ?? "",
-            location: formData.get("location") ?? "",
-          };
 
-          setRequestParams(obj);
+          const reqObj = getFormData(e);
+
+          setRequestParams(reqObj);
         }}
       >
         <label htmlFor="location">
@@ -75,6 +107,16 @@ export const SearchParams = () => {
 
         <button>Submit</button>
       </form>
+
+      <span style={{ display: "flex" }}>
+        <button disabled={page === 0} onClick={handleBackPg}>
+          Prev
+        </button>
+        <button disabled={pets.length < 10} onClick={handleNextPg}>
+          Next
+        </button>
+      </span>
+
       <PetList pets={pets} />
     </div>
   );
