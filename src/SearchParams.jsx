@@ -55,7 +55,6 @@ export const SearchParams = () => {
       };
     });
   };
-  console.log(breedList);
   return (
     <div className="search-params">
       <form

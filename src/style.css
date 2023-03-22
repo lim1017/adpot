@@ -220,6 +220,15 @@ header {
   border: 1px solid cornflowerblue;
 }
 
+.search-params button:disabled {
+  background-color: grey;
+}
+
+.search-params button:disabled:hover {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
 #modal {
   background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
